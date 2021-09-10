@@ -3,10 +3,10 @@
     <div>
       <input type="text" v-model="search" />
       <button type="button" @click="searchMovie()">
-        Cerca
+        Search
       </button>
     </div>
-
+    <h2>Movie</h2>
     <div v-for="(movie, index) in movieList[0]" :key="index">
       <ul>
         <li>
@@ -16,10 +16,36 @@
           Original Title: <strong>{{ movie.original_title }}</strong>
         </li>
         <li>
-          Original Language: <strong>{{ movie.original_language }}</strong>
+          Original Language:
+          <span v-if="searchFlag(movie.original_language)"
+            ><img :src="srcFlag" width="50px" height="auto" alt=""
+          /></span>
+
+          <span v-else>{{ movie.original_language }}</span>
         </li>
         <li>
           Movie Average Vote: <strong>{{ movie.vote_average }}</strong>
+        </li>
+      </ul>
+    </div>
+    <h2>Series</h2>
+    <div v-for="(series, index) in seriesList[0]" :key="index">
+      <ul>
+        <li>
+          Title: <strong>{{ series.name }}</strong>
+        </li>
+        <li>
+          Original Title: <strong>{{ series.original_name }}</strong>
+        </li>
+        <li>
+          Original Language:
+          <span v-if="searchFlag(series.original_language)"
+            ><img :src="srcFlag" width="50px" height="auto" alt=""
+          /></span>
+          <span v-else>{{ series.original_language }}</span>
+        </li>
+        <li>
+          Series Average Vote: <strong>{{ series.vote_average }}</strong>
         </li>
       </ul>
     </div>
@@ -33,25 +59,47 @@ export default {
   data() {
     return {
       movieList: [],
+      seriesList: [],
       search: '',
-      searchLink: '',
+      searchLinkMovie: '',
+      searchLinkSeries: '',
+      flagList: ['it', 'en'],
+      srcFlag: '',
     };
   },
   methods: {
     searchMovie() {
       this.movieList = [];
-      this.searchLink =
+      this.seriesList = [];
+      this.searchLinkMovie =
         'https://api.themoviedb.org/3/search/movie?api_key=4f27c01416f06baf9422adda6e42746d&query=' +
         this.search;
-      console.log(this.searchLink);
-      axios.get(this.searchLink).then((res) => {
+      this.searchLinkSeries =
+        'https://api.themoviedb.org/3/search/tv?api_key=4f27c01416f06baf9422adda6e42746d&query=' +
+        this.search;
+
+      axios.get(this.searchLinkMovie).then((res) => {
         this.movieList.push(res.data.results);
       });
+      axios.get(this.searchLinkSeries).then((res) => {
+        this.seriesList.push(res.data.results);
+      });
+      console.log(this.seriesList);
+      console.log(this.movieList[0]);
       this.search = '';
-      this.searchLink = '';
+      this.searchLinkMovie = '';
+      this.searchLinkSeries = '';
+    },
+    searchFlag(language) {
+      if (this.flagList.includes(language)) {
+        this.srcFlag = require('../assets/img/' + language + '.png');
+        console.log(this.srcFlag);
+        return true;
+      } else {
+        return false;
+      }
     },
   },
-  created() {},
 };
 </script>
 
