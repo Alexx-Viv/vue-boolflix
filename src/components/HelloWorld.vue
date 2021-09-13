@@ -10,6 +10,9 @@
     <div v-for="(movie, index) in movieList[0]" :key="index">
       <ul>
         <li>
+          <img :src="`${posterBaseUrl}${movie.poster_path}`" alt="" />
+        </li>
+        <li>
           Title: <strong>{{ movie.title }}</strong>
         </li>
         <li>
@@ -24,13 +27,17 @@
           <span v-else>{{ movie.original_language }}</span>
         </li>
         <li>
-          Movie Average Vote: <strong>{{ movie.vote_average }}</strong>
+          Movie Average Vote:
+          <strong>{{ averageVote(movie.vote_average) }}</strong>
         </li>
       </ul>
     </div>
     <h2>Series</h2>
     <div v-for="(series, index) in seriesList[0]" :key="index">
       <ul>
+        <li>
+          <img :src="`${posterBaseUrl}${movie.poster_path}`" alt="" />
+        </li>
         <li>
           Title: <strong>{{ series.name }}</strong>
         </li>
@@ -65,6 +72,7 @@ export default {
       searchLinkSeries: '',
       flagList: ['it', 'en'],
       srcFlag: '',
+      posterBaseUrl: 'https://image.tmdb.org/t/p/w342/',
     };
   },
   methods: {
@@ -98,6 +106,9 @@ export default {
       } else {
         return false;
       }
+    },
+    averageVote(average) {
+      return Math.ceil(average / 2);
     },
   },
 };
